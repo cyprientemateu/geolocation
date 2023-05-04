@@ -39,6 +39,14 @@ pipeline {
                     sh 'docker push 734028878759.dkr.ecr.us-east-1.amazonaws.com/geolocation_ecr_rep:latest'
                 }
             }
+        }
+        //deploy the image that is in ECR to our EKS cluster
+        stage ("Kube Deploy") {
+            steps {
+                withKubeConfig([credentialsId: 'eks_credential', serverUrl: '']) {
+                 sh "kubectl apply -f eks_deploy_from_ecr.yaml"
+                }
+            }
         }    
     }
 }
